@@ -1,0 +1,355 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">pygame</span>
+<span class="s0">import </span><span class="s1">transperent_img </span><span class="s0">as </span><span class="s1">ti</span>
+<span class="s0">import </span><span class="s1">mp3_player </span><span class="s0">as </span><span class="s1">mp3</span>
+<span class="s0">import </span><span class="s1">cv2</span>
+<span class="s0">import </span><span class="s1">time</span>
+<span class="s0">import </span><span class="s1">x_y_random</span>
+<span class="s0">from </span><span class="s1">_datetime </span><span class="s0">import </span><span class="s1">datetime</span>
+
+<span class="s1">win_width = </span><span class="s2">1000</span>
+<span class="s1">win_height = </span><span class="s2">700</span>
+
+<span class="s1">pygame.init()</span>
+<span class="s1">windows = pygame.display.set_mode((win_width</span><span class="s0">, </span><span class="s1">win_height))</span>
+<span class="s1">pygame.display.set_caption(</span><span class="s3">&quot;Love&quot;</span><span class="s1">)</span>
+
+<span class="s1">is_running = </span><span class="s0">True</span>
+
+<span class="s1">screen_info = pygame.display.Info()</span>
+<span class="s1">screen_width = screen_info.current_w</span>
+<span class="s1">screen_height = screen_info.current_h</span>
+
+<span class="s1">gun_img=ti.white_to_transparent(</span><span class="s3">'gun.png'</span><span class="s0">,</span><span class="s3">'gun_no_white.png'</span><span class="s1">)</span>
+<span class="s1">gun_img = pygame.image.load(</span><span class="s3">'gun_no_white.png'</span><span class="s1">)</span>
+<span class="s1">gun_width</span><span class="s0">, </span><span class="s1">gun_height = gun_img.get_size()</span>
+
+<span class="s1">gaza_img=pygame.image.load(</span><span class="s3">'gaza.jpg'</span><span class="s1">)</span>
+<span class="s1">background_image = pygame.transform.scale(gaza_img</span><span class="s0">, </span><span class="s1">(screen_width</span><span class="s0">, </span><span class="s1">screen_height))</span>
+
+
+<span class="s1">militery_sight=ti.white_to_transparent(</span><span class="s3">'militery.png'</span><span class="s0">,</span><span class="s3">'militery_no_white.png'</span><span class="s1">)</span>
+<span class="s1">militery_sight = pygame.image.load(</span><span class="s3">'militery_no_white.png'</span><span class="s1">)</span>
+<span class="s1">militery_sight_w</span><span class="s0">,</span><span class="s1">militery_sight_h=militery_sight.get_size()</span>
+<span class="s1">militery_sight=pygame.transform.scale(militery_sight</span><span class="s0">,</span><span class="s1">(militery_sight_w//</span><span class="s2">2</span><span class="s0">,</span><span class="s1">militery_sight_h//</span><span class="s2">2</span><span class="s1">))</span>
+
+<span class="s1">biden=ti.white_to_transparent(</span><span class="s3">'biden.png'</span><span class="s0">,</span><span class="s3">'biden_no_w.png'</span><span class="s1">)</span>
+<span class="s1">biden=pygame.image.load(</span><span class="s3">'biden_no_w.png'</span><span class="s1">)</span>
+<span class="s1">biden_w</span><span class="s0">,</span><span class="s1">biden_h=biden.get_size()</span>
+<span class="s1">biden=pygame.transform.scale(biden</span><span class="s0">,</span><span class="s1">(biden_w</span><span class="s0">,</span><span class="s1">biden_h))</span>
+
+<span class="s1">sara=ti.white_to_transparent(</span><span class="s3">'sara.png'</span><span class="s0">,</span><span class="s3">'sara_no_w.png'</span><span class="s1">)</span>
+<span class="s1">sara=pygame.image.load(</span><span class="s3">'sara_no_w.png'</span><span class="s1">)</span>
+<span class="s1">sara_w</span><span class="s0">,</span><span class="s1">sara_h=sara.get_size()</span>
+<span class="s1">sara =pygame.transform.scale(sara</span><span class="s0">,</span><span class="s1">(sara_w-</span><span class="s2">50</span><span class="s0">,</span><span class="s1">sara_h-</span><span class="s2">50</span><span class="s1">))</span>
+
+<span class="s1">tank=ti.white_to_transparent(</span><span class="s3">'tank.png'</span><span class="s0">,</span><span class="s3">'tank_no_w.png'</span><span class="s1">)</span>
+<span class="s1">tank=pygame.image.load(</span><span class="s3">'tank_no_w.png'</span><span class="s1">)</span>
+<span class="s1">tank_w</span><span class="s0">,</span><span class="s1">tank_h=tank.get_size()</span>
+<span class="s1">tank_w=tank_w+</span><span class="s2">100</span>
+<span class="s1">tank_h=tank_h+</span><span class="s2">100</span>
+<span class="s1">tank=pygame.transform.scale(tank</span><span class="s0">,</span><span class="s1">(tank_w</span><span class="s0">,</span><span class="s1">tank_h))</span>
+
+<span class="s1">bullet=ti.white_to_transparent(</span><span class="s3">'bullet.png'</span><span class="s0">,</span><span class="s3">'bullet_no_w.png'</span><span class="s1">)</span>
+<span class="s1">bullet=pygame.image.load(</span><span class="s3">'bullet_no_w.png'</span><span class="s1">)</span>
+<span class="s1">bullet_w</span><span class="s0">,</span><span class="s1">bullet_h=bullet.get_size()</span>
+<span class="s1">bullet=pygame.transform.scale(bullet</span><span class="s0">,</span><span class="s1">(bullet_w-</span><span class="s2">950</span><span class="s0">,</span><span class="s1">bullet_h-</span><span class="s2">951</span><span class="s1">))</span>
+
+<span class="s1">cokie=ti.white_to_transparent(</span><span class="s3">'cokie.png'</span><span class="s0">,</span><span class="s3">'cokie_no_w.png'</span><span class="s1">)</span>
+<span class="s1">cokie=pygame.image.load(</span><span class="s3">'cokie_no_w.png'</span><span class="s1">)</span>
+
+
+<span class="s1">hamas=ti.white_to_transparent(</span><span class="s3">'hamas.png'</span><span class="s0">,</span><span class="s3">'hamas_no_w.png'</span><span class="s1">)</span>
+<span class="s1">hamas=pygame.image.load(</span><span class="s3">'hamas_no_w.png'</span><span class="s1">)</span>
+<span class="s1">hamas_w</span><span class="s0">,</span><span class="s1">hamas_h=hamas.get_size()</span>
+<span class="s1">hamas=pygame.transform.scale(hamas</span><span class="s0">,</span><span class="s1">(hamas_w-</span><span class="s2">60</span><span class="s0">,</span><span class="s1">hamas_h-</span><span class="s2">60</span><span class="s1">))</span>
+
+
+
+
+<span class="s1">list_h=[gun_height</span><span class="s0">,</span><span class="s1">tank_h</span><span class="s0">,</span><span class="s1">biden_h</span><span class="s0">,</span><span class="s1">(sara_h-</span><span class="s2">50</span><span class="s1">)]</span>
+<span class="s1">list_w=[gun_width</span><span class="s0">,</span><span class="s1">tank_w</span><span class="s0">,</span><span class="s1">biden_w</span><span class="s0">,</span><span class="s1">(sara_w-</span><span class="s2">50</span><span class="s1">)]</span>
+
+<span class="s1">atom=ti.white_to_transparent(</span><span class="s3">'atom.png'</span><span class="s0">,</span><span class="s3">'atom_no_w.png'</span><span class="s1">)</span>
+<span class="s1">atom=pygame.image.load(</span><span class="s3">'atom_no_w.png'</span><span class="s1">)</span>
+<span class="s1">atom_w</span><span class="s0">,</span><span class="s1">atom_h=atom.get_size()</span>
+<span class="s1">atom=pygame.transform.scale(atom</span><span class="s0">,</span><span class="s1">(atom_w+</span><span class="s2">600</span><span class="s0">,</span><span class="s1">atom_h+</span><span class="s2">600</span><span class="s1">))</span>
+
+<span class="s1">rachel=ti.white_to_transparent(</span><span class="s3">'rachel.png'</span><span class="s0">,</span><span class="s3">'rachel_no_w.png'</span><span class="s1">)</span>
+<span class="s1">rachel=pygame.image.load(</span><span class="s3">'rachel_no_w.png'</span><span class="s1">)</span>
+<span class="s1">rachel_w</span><span class="s0">,</span><span class="s1">rachel_h=rachel.get_size()</span>
+<span class="s1">rachel=pygame.transform.scale(rachel</span><span class="s0">,</span><span class="s1">(rachel_w+</span><span class="s2">100</span><span class="s0">,</span><span class="s1">rachel_h+</span><span class="s2">100</span><span class="s1">))</span>
+
+<span class="s1">trump=ti.white_to_transparent(</span><span class="s3">'trump.png'</span><span class="s0">,</span><span class="s3">'trump_no_w.png'</span><span class="s1">)</span>
+<span class="s1">trump=pygame.image.load(</span><span class="s3">'trump_no_w.png'</span><span class="s1">)</span>
+<span class="s1">trump_w</span><span class="s0">,</span><span class="s1">trump_y=trump.get_size()</span>
+<span class="s1">trump=pygame.transform.scale(trump</span><span class="s0">,</span><span class="s1">(trump_w+</span><span class="s2">50</span><span class="s0">,</span><span class="s1">trump_y+</span><span class="s2">50</span><span class="s1">))</span>
+
+<span class="s1">carret=ti.white_to_transparent(</span><span class="s3">'carret.png'</span><span class="s0">,</span><span class="s3">'carret_no_w.png'</span><span class="s1">)</span>
+<span class="s1">carret=pygame.image.load(</span><span class="s3">'carret_no_w.png'</span><span class="s1">)</span>
+<span class="s1">carret_w</span><span class="s0">,</span><span class="s1">carret_y=carret.get_size()</span>
+<span class="s1">carret=pygame.transform.scale(carret</span><span class="s0">,</span><span class="s1">(carret_w+</span><span class="s2">50</span><span class="s0">,</span><span class="s1">carret_y+</span><span class="s2">50</span><span class="s1">))</span>
+
+<span class="s1">shampan=ti.white_to_transparent(</span><span class="s3">'shampan.png'</span><span class="s0">,</span><span class="s3">'shampan_no_w.png'</span><span class="s1">)</span>
+<span class="s1">shampan=pygame.image.load(</span><span class="s3">'shampan_no_w.png'</span><span class="s1">)</span>
+<span class="s1">shampan_w</span><span class="s0">,</span><span class="s1">shampan_y=carret.get_size()</span>
+<span class="s1">shampan=pygame.transform.scale(shampan</span><span class="s0">,</span><span class="s1">(shampan_w-</span><span class="s2">50</span><span class="s0">,</span><span class="s1">shampan_y-</span><span class="s2">50</span><span class="s1">))</span>
+
+<span class="s1">font_score = pygame.font.Font(</span><span class="s3">'font_score.ttf'</span><span class="s0">, </span><span class="s2">80</span><span class="s1">)</span>
+<span class="s1">font_game_over = pygame.font.Font(</span><span class="s3">'font_score.ttf'</span><span class="s0">, </span><span class="s2">180</span><span class="s1">)</span>
+<span class="s1">font_stage = pygame.font.Font(</span><span class="s3">'font_stage.ttf'</span><span class="s0">, </span><span class="s2">50</span><span class="s1">)</span>
+
+<span class="s1">list_h=[gun_height</span><span class="s0">,</span><span class="s1">tank_h</span><span class="s0">,</span><span class="s1">biden_h</span><span class="s0">,</span><span class="s1">rachel_w</span><span class="s0">,</span><span class="s1">trump_w</span><span class="s0">,</span><span class="s1">(sara_h-</span><span class="s2">50</span><span class="s1">)]</span>
+<span class="s1">list_w=[gun_width</span><span class="s0">,</span><span class="s1">tank_w</span><span class="s0">,</span><span class="s1">biden_w</span><span class="s0">,</span><span class="s1">rachel_h+</span><span class="s2">50</span><span class="s0">,</span><span class="s1">trump_y</span><span class="s0">,</span><span class="s1">(sara_w-</span><span class="s2">50</span><span class="s1">)]</span>
+
+<span class="s1">left_press = </span><span class="s0">False</span>
+
+<span class="s1">counter_gun =</span><span class="s2">0</span>
+<span class="s1">counter_tank=</span><span class="s2">0</span>
+<span class="s1">counter_biden=</span><span class="s2">0</span>
+
+<span class="s1">max_gun=</span><span class="s2">15</span>
+<span class="s1">max_tank=</span><span class="s2">5</span>
+<span class="s1">max_biden=</span><span class="s2">1</span>
+
+<span class="s1">x_b</span><span class="s0">, </span><span class="s1">y_b=</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span>
+<span class="s1">x_count</span><span class="s0">,</span><span class="s1">y_count=</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span>
+
+<span class="s1">count_b =</span><span class="s2">0</span>
+<span class="s1">current_time=</span><span class="s2">0</span>
+
+<span class="s1">count_ki=</span><span class="s2">0</span>
+
+
+<span class="s1">count_time_run=</span><span class="s2">0</span>
+<span class="s1">x_r=</span><span class="s2">520</span>
+<span class="s1">y_r=</span><span class="s2">80</span>
+
+
+<span class="s1">list_shot=[bullet</span><span class="s0">,</span><span class="s1">bullet</span><span class="s0">,</span><span class="s1">carret</span><span class="s0">,</span><span class="s1">cokie</span><span class="s0">,</span><span class="s1">bullet</span><span class="s0">,</span><span class="s1">shampan]</span>
+
+<span class="s1">atom_t=</span><span class="s2">0</span>
+<span class="s1">list_img=[gun_img</span><span class="s0">,</span><span class="s1">tank</span><span class="s0">,</span><span class="s1">biden</span><span class="s0">,</span><span class="s1">rachel</span><span class="s0">,</span><span class="s1">trump</span><span class="s0">,</span><span class="s1">sara]</span>
+<span class="s1">current_image=</span><span class="s2">0</span>
+
+<span class="s1">start_timer=datetime.now().second</span>
+
+<span class="s1">stage_sec=</span><span class="s2">60</span>
+
+<span class="s1">list_stages=[</span><span class="s2">1</span><span class="s0">,</span><span class="s2">2</span><span class="s0">,</span><span class="s2">3</span><span class="s1">]</span>
+<span class="s1">list_stages_timer=[</span><span class="s2">20</span><span class="s0">,</span><span class="s2">18</span><span class="s0">,</span><span class="s2">16</span><span class="s1">]</span>
+<span class="s1">list_stages_count_ki=[</span><span class="s2">10</span><span class="s0">,</span><span class="s2">15</span><span class="s0">,</span><span class="s2">20</span><span class="s1">]</span>
+<span class="s1">stage=</span><span class="s2">0</span>
+
+
+<span class="s0">while </span><span class="s1">is_running:</span>
+
+    <span class="s0">for </span><span class="s1">event </span><span class="s0">in </span><span class="s1">pygame.event.get():</span>
+        <span class="s0">if </span><span class="s1">event.type == pygame.QUIT:</span>
+            <span class="s1">is_running = </span><span class="s0">False</span>
+        <span class="s0">if </span><span class="s1">event.type == pygame.MOUSEBUTTONDOWN:</span>
+            <span class="s0">if </span><span class="s1">event.button == </span><span class="s2">4</span><span class="s1">:</span>
+                <span class="s1">current_image = (current_image + </span><span class="s2">1</span><span class="s1">) % len(list_img)</span>
+            <span class="s0">elif </span><span class="s1">event.button == </span><span class="s2">5</span><span class="s1">:</span>
+                <span class="s1">current_image = (current_image - </span><span class="s2">1</span><span class="s1">) % len(list_img)</span>
+
+
+
+    <span class="s1">windows.blit(background_image</span><span class="s0">, </span><span class="s1">(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+
+    <span class="s1">x</span><span class="s0">,</span><span class="s1">y=pygame.mouse.get_pos()</span>
+
+    <span class="s1">left_m_p=pygame.mouse.get_pressed()[</span><span class="s2">0</span><span class="s1">]</span>
+
+
+
+    <span class="s0">if </span><span class="s1">current_image==</span><span class="s2">2</span><span class="s1">:</span>
+        <span class="s1">mp3.mp3_p(</span><span class="s3">'koch rachel.mp3'</span><span class="s1">)</span>
+
+
+
+    <span class="s0">if </span><span class="s1">left_m_p </span><span class="s0">and not </span><span class="s1">left_press:</span>
+        <span class="s1">x_b</span><span class="s0">, </span><span class="s1">y_b = pygame.mouse.get_pos()</span>
+
+        <span class="s1">x_k = x_r + hamas_w</span>
+        <span class="s1">y_k = y_r + hamas_h</span>
+        <span class="s1">x_k_b = image_x + (x_count * </span><span class="s2">4</span><span class="s1">)</span>
+        <span class="s1">y_k_b = image_y + (y_count * </span><span class="s2">4</span><span class="s1">)</span>
+
+        <span class="s0">if </span><span class="s1">x &lt; x_k - </span><span class="s2">90 </span><span class="s0">and </span><span class="s1">x &gt; x_r + </span><span class="s2">50</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">y &gt; y_r + </span><span class="s2">50 </span><span class="s0">and </span><span class="s1">y &lt; y_k - </span><span class="s2">70</span><span class="s1">:</span>
+                <span class="s1">count_ki += </span><span class="s2">1</span>
+                <span class="s4">#print('#kill#')</span>
+
+        <span class="s4">#print(x_b,y_b)</span>
+        <span class="s0">if </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">0</span><span class="s1">]:</span>
+            <span class="s1">counter_gun += </span><span class="s2">1</span>
+            <span class="s0">if </span><span class="s1">max_gun - counter_gun &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">mp3.mp3_p(</span><span class="s3">'gunfire.mp3'</span><span class="s1">)</span>
+
+
+        <span class="s0">elif </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">1</span><span class="s1">]:</span>
+
+            <span class="s1">counter_tank += </span><span class="s2">1</span>
+            <span class="s0">if </span><span class="s1">max_tank - counter_tank &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">mp3.mp3_p(</span><span class="s3">'rocket.mp3'</span><span class="s1">)</span>
+
+        <span class="s0">elif </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">2</span><span class="s1">]:</span>
+            <span class="s0">if </span><span class="s1">max_biden - counter_biden &gt; </span><span class="s2">0</span><span class="s1">:</span>
+
+                <span class="s1">mp3.mp3_p(</span><span class="s3">'biden-dont.mp3'</span><span class="s1">)</span>
+
+
+        <span class="s0">elif </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">3</span><span class="s1">]:</span>
+
+            <span class="s1">mp3.mp3_p(</span><span class="s3">'rachel.mp3'</span><span class="s1">)</span>
+
+        <span class="s0">elif </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">4</span><span class="s1">]:</span>
+            <span class="s0">if </span><span class="s1">max_biden - counter_biden &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">atom_t=time.time()</span>
+
+            <span class="s1">counter_biden += </span><span class="s2">1</span>
+
+        <span class="s0">elif </span><span class="s1">list_img[current_image] == list_img[</span><span class="s2">5</span><span class="s1">]:</span>
+            <span class="s1">mp3.mp3_p(</span><span class="s3">'sara.mp3'</span><span class="s1">)</span>
+
+
+
+
+    <span class="s1">left_press = </span><span class="s0">True</span>
+
+    <span class="s0">if </span><span class="s1">left_m_p:</span>
+
+        <span class="s1">current_time=time.time()</span>
+        <span class="s1">count_b+=</span><span class="s2">1</span>
+        <span class="s4">#if count_b&lt;60:</span>
+
+        <span class="s4">#elif count_b==60:</span>
+           <span class="s4">#</span>
+            <span class="s4">#count_b=0</span>
+
+
+
+
+    <span class="s0">if not </span><span class="s1">left_m_p:</span>
+        <span class="s1">left_press = </span><span class="s0">False</span>
+
+    <span class="s1">timer_current = datetime.now().second</span>
+    <span class="s0">if </span><span class="s1">stage&lt;</span><span class="s2">3 </span><span class="s0">and </span><span class="s1">count_ki==list_stages_count_ki[stage]:</span>
+        <span class="s1">print(stage)</span>
+        <span class="s1">stage_sec-=</span><span class="s2">10</span>
+        <span class="s1">stage+=</span><span class="s2">1</span>
+        <span class="s1">count_ki=</span><span class="s2">0</span>
+        <span class="s1">counter_gun</span><span class="s0">,</span><span class="s1">counter_tank</span><span class="s0">,</span><span class="s1">counter_biden=</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span>
+        <span class="s1">start_timer = datetime.now().second</span>
+    <span class="s0">if </span><span class="s1">stage==</span><span class="s2">3</span><span class="s1">:</span>
+        <span class="s1">text = font_game_over.render(</span><span class="s3">&quot;Israel win&quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">255</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+        <span class="s1">text_width = text.get_width()</span>
+
+    <span class="s0">elif </span><span class="s1">(list_stages_timer[stage]-(timer_current-start_timer))&lt;</span><span class="s2">0 </span><span class="s0">or </span><span class="s1">max_gun-counter_gun &lt;=</span><span class="s2">0 </span><span class="s0">and </span><span class="s1">max_tank-counter_tank &lt;=</span><span class="s2">0 </span><span class="s0">and </span><span class="s1">max_biden-counter_biden &lt;</span><span class="s2">0 </span><span class="s0">and </span><span class="s1">count_ki&lt;list_stages_count_ki[stage] :</span>
+        <span class="s1">mp3.mp3_p(</span><span class="s3">'game_over.mp3'</span><span class="s1">)</span>
+        <span class="s1">text = font_game_over.render(</span><span class="s3">&quot;Game Over &quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">255</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+        <span class="s1">text_width = text.get_width()</span>
+
+        <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">((screen_width//</span><span class="s2">2</span><span class="s1">)-(text_width//</span><span class="s2">2</span><span class="s1">)+</span><span class="s2">30</span><span class="s0">,</span><span class="s1">(screen_height//</span><span class="s2">2</span><span class="s1">)-</span><span class="s2">70</span><span class="s1">))</span>
+    <span class="s0">else</span><span class="s1">:</span>
+
+
+        <span class="s1">text = font_stage.render(</span><span class="s3">&quot;Stage &quot;</span><span class="s1">+str(stage+</span><span class="s2">1</span><span class="s1">) </span><span class="s0">, True,</span><span class="s1">(</span><span class="s2">255</span><span class="s0">, </span><span class="s2">255</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+        <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">400</span><span class="s0">, </span><span class="s2">20</span><span class="s1">))</span>
+
+        <span class="s0">if </span><span class="s1">count_time_run==stage_sec:</span>
+            <span class="s1">x_r = x_y_random.rand(</span><span class="s3">'x'</span><span class="s0">, </span><span class="s1">screen_width - hamas_w)</span>
+            <span class="s1">y_r = x_y_random.rand(</span><span class="s3">'y'</span><span class="s0">, </span><span class="s2">1</span><span class="s1">)</span>
+            <span class="s1">count_time_run=</span><span class="s2">0</span>
+
+
+        <span class="s1">windows.blit(hamas</span><span class="s0">,</span><span class="s1">(x_r</span><span class="s0">,</span><span class="s1">y_r))</span>
+        <span class="s1">text = font_score.render(</span><span class="s3">&quot;Gaza &quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">255</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+        <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">540</span><span class="s0">, </span><span class="s2">239</span><span class="s1">))</span>
+        <span class="s1">windows.blit(militery_sight</span><span class="s0">,</span><span class="s1">(x-militery_sight_w//</span><span class="s2">4</span><span class="s0">,</span><span class="s1">y-militery_sight_h//</span><span class="s2">4</span><span class="s1">))</span>
+
+        <span class="s1">text = font_score.render(</span><span class="s3">&quot;Score: &quot; </span><span class="s1">+ str(count_ki) +</span><span class="s3">&quot;/&quot;</span><span class="s1">+ str(list_stages_count_ki[stage]) </span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">40</span><span class="s0">, </span><span class="s2">150</span><span class="s1">))</span>
+        <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">18</span><span class="s0">, </span><span class="s2">74</span><span class="s1">))</span>
+
+
+        <span class="s1">text = font_score.render(</span><span class="s3">&quot;Timer: 0 : &quot; </span><span class="s1">+ str(list_stages_timer[stage]-(timer_current-start_timer)) </span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">200</span><span class="s0">,</span><span class="s2">0</span><span class="s1">))</span>
+        <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">18</span><span class="s0">, </span><span class="s2">140</span><span class="s1">))</span>
+
+        <span class="s0">if </span><span class="s1">current_image==</span><span class="s2">0</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">max_gun - counter_gun &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">text = font_score.render(</span><span class="s3">&quot;Fire: &quot; </span><span class="s1">+ str(max_gun - counter_gun)</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">255</span><span class="s0">, </span><span class="s2">50</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+                <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">20</span><span class="s0">, </span><span class="s2">10</span><span class="s1">))</span>
+
+        <span class="s0">elif </span><span class="s1">current_image==</span><span class="s2">1</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">max_tank - counter_tank &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">text = font_score.render(</span><span class="s3">&quot;Fire: &quot; </span><span class="s1">+ str(max_tank - counter_tank)</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">50</span><span class="s0">, </span><span class="s2">255</span><span class="s1">))</span>
+                <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">20</span><span class="s0">, </span><span class="s2">10</span><span class="s1">))</span>
+
+        <span class="s0">elif </span><span class="s1">current_image==</span><span class="s2">2</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">max_biden - counter_biden &gt; </span><span class="s2">0</span><span class="s1">:</span>
+                <span class="s1">text = font_score.render(</span><span class="s3">&quot;Fire: &quot; </span><span class="s1">+ str(max_biden - counter_biden)</span><span class="s0">, True, </span><span class="s1">(</span><span class="s2">50</span><span class="s0">, </span><span class="s2">255</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span>
+                <span class="s1">windows.blit(text</span><span class="s0">, </span><span class="s1">(</span><span class="s2">20</span><span class="s0">, </span><span class="s2">10</span><span class="s1">))</span>
+
+
+        <span class="s1">image_x = x - ((list_w[current_image] )// </span><span class="s2">2</span><span class="s1">)</span>
+        <span class="s1">image_y = (win_height - (list_h[current_image]))</span>
+
+
+
+
+        <span class="s1">windows.blit(list_img[current_image]</span><span class="s0">, </span><span class="s1">(image_x</span><span class="s0">, </span><span class="s1">image_y))</span>
+        <span class="s0">if </span><span class="s1">time.time() - current_time &lt; </span><span class="s2">0.1</span><span class="s1">:</span>
+            <span class="s1">x_count = x_dis + x_count</span>
+            <span class="s1">y_count = y_count + y_dis</span>
+
+            <span class="s1">windows.blit(list_shot[current_image]</span><span class="s0">, </span><span class="s1">(image_x + (x_count * </span><span class="s2">10</span><span class="s1">)</span><span class="s0">, </span><span class="s1">image_y + (y_count * </span><span class="s2">10</span><span class="s1">)))</span>
+
+
+
+           <span class="s4"># print(image_x + x_count, image_y + y_count)</span>
+            <span class="s4">#print(image_x, image_y)</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">x_count = </span><span class="s2">0</span>
+            <span class="s1">y_count = </span><span class="s2">0</span>
+
+        <span class="s1">x_dis= x_b-image_x</span>
+        <span class="s1">y_dis= y_b - image_y</span>
+        <span class="s1">x_dis=x_dis//</span><span class="s2">60</span>
+        <span class="s1">y_dis=y_dis//</span><span class="s2">60</span>
+
+        <span class="s0">if </span><span class="s1">time.time()-atom_t&lt;</span><span class="s2">10</span><span class="s1">:</span>
+            <span class="s1">windows.blit(atom</span><span class="s0">,</span><span class="s1">(</span><span class="s2">150</span><span class="s0">,</span><span class="s2">20</span><span class="s1">))</span>
+
+
+
+
+
+    <span class="s1">pygame.display.update()</span>
+
+    <span class="s1">windows.fill((</span><span class="s2">50</span><span class="s0">,</span><span class="s2">70</span><span class="s0">, </span><span class="s2">255</span><span class="s1">))</span>
+    <span class="s4"># Limit frames per second (FPS)</span>
+    <span class="s1">count_time_run+=</span><span class="s2">1</span>
+    <span class="s1">pygame.time.Clock().tick(</span><span class="s2">60</span><span class="s1">)</span>
+
+<span class="s1">pygame.quit()</span>
+</pre>
+</body>
+</html>
