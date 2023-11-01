@@ -6,10 +6,14 @@ import time
 import x_y_random
 from _datetime import datetime
 
+
+pygame.init()
+
+
 win_width = 1000
 win_height = 700
 
-pygame.init()
+
 windows = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Love")
 
